@@ -6,5 +6,5 @@ class GetArticles {
 
   GetArticles(this.repository);
 
-  Future<List<NewsArticle>> call() => repository.getArticles();
+  Future<List<NewsArticle>> call(String category) => repository.getArticles(category);
 }

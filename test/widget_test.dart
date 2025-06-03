@@ -7,13 +7,20 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:get/get_navigation/src/root/get_material_app.dart';
 
 import 'package:getx_news_clean_arch/main.dart';
+import 'package:getx_news_clean_arch/presentation/routes/app_routes.dart';
 
 void main() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
     // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+    await tester.pumpWidget(GetMaterialApp(
+      title: 'GetX eCommerce App',
+      initialRoute: AppRoutes.homePage,
+      getPages: AppRoutes.pages,
+      debugShowCheckedModeBanner: false,
+    ));
 
     // Verify that our counter starts at 0.
     expect(find.text('0'), findsOneWidget);

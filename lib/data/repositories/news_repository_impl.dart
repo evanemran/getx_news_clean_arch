@@ -11,8 +11,8 @@ class NewsRepositoryImpl implements NewsRepository {
   NewsRepositoryImpl(this.api);
 
   @override
-  Future<List<NewsArticle>> getArticles() async {
-    final rawList = await api.fetchNews();
+  Future<List<NewsArticle>> getArticles(String category) async {
+    final rawList = await api.fetchNews(category);
     var list = NewsResponse.fromJson(rawList);
     return list.articles??[];
   }
