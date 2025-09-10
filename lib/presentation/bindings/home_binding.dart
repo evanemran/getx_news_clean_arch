@@ -5,6 +5,7 @@ import 'package:getx_news_clean_arch/data/providers/news_api.dart';
 import 'package:getx_news_clean_arch/data/repositories/news_repository_impl.dart';
 import 'package:getx_news_clean_arch/domain/usecases/get_articles.dart';
 import 'package:getx_news_clean_arch/presentation/controllers/home_controller.dart';
+import 'package:getx_news_clean_arch/presentation/controllers/news_details_controller.dart';
 
 import '../../domain/repositories/news_repository.dart';
 
@@ -16,5 +17,6 @@ class HomeBinding extends Bindings {
     Get.lazyPut(() => NewsRepositoryImpl(Get.find()));
     Get.lazyPut(() => GetArticles(Get.find()));
     Get.lazyPut(() => HomeController(Get.find()));
+    Get.lazyPut(() => NewsDetailsController());
   }
 }
