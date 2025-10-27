@@ -38,6 +38,7 @@ dependencies:
   http: ^1.2.0
   intl: ^0.20.2
   webview_flutter: ^4.10.0
+  home_widget: ^0.8.0
 
 dev_dependencies:
   flutter_test:

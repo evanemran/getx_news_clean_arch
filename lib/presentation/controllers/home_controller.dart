@@ -1,7 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:getx_news_clean_arch/domain/entities/news_article.dart';
 import 'package:getx_news_clean_arch/domain/usecases/get_articles.dart';
+import 'package:home_widget/home_widget.dart';
+
+import '../routes/app_routes.dart';
 
 class HomeController extends GetxController with GetTickerProviderStateMixin{
   final GetArticles getArticlesUseCase;
@@ -26,6 +31,26 @@ class HomeController extends GetxController with GetTickerProviderStateMixin{
   void onInit() {
     fetchArticles("sports");
     super.onInit();
+
+    // Listen if user tapped the widget when app already running
+    HomeWidget.widgetClicked.listen((uri) {
+      if (uri != null) {
+        // parse uri and route with Get.toNamed('/article', arguments: {...})
+        final q = uri.queryParameters;
+        if (q.containsKey('url')) {
+          Get.toNamed(AppRoutes.detailsPage, arguments: {'url': q['url']});
+        }
+      }
+    });
+
+    // Handle the case where the app was launched from a widget
+    HomeWidget.initiallyLaunchedFromHomeWidget().then((uri) {
+      if (uri != null && uri.queryParameters.containsKey('url')) {
+        Get.toNamed(AppRoutes.detailsPage, arguments: {'url': uri.queryParameters['url']});
+      }
+    });
+
+    // Tab Controller with Animation
     tabController = TabController(length: categories.length, vsync: this);
     tabController.addListener(() {
       if (tabController.indexIsChanging) {
@@ -46,7 +71,7 @@ class HomeController extends GetxController with GetTickerProviderStateMixin{
     });
   }
 
-  void fetchArticles(String category) async {
+  void fetchArticles(String category, {int limit = 10}) async {
     isLoading.value = true;
     try {
       final result = await getArticlesUseCase(category);
@@ -57,6 +82,22 @@ class HomeController extends GetxController with GetTickerProviderStateMixin{
       isLoading.value = false;
     }
   }
+
+  Future<void> updateHomeWidgetTop5() async {
+    final top5 = await getArticlesUseCase("business");
+    final list = top5.map((a) => {'title': a.title, 'url': a.url}).toList();
+    final jsonStr = jsonEncode(list);
+
+    // Save to widget storage
+    await HomeWidget.saveWidgetData<String>('news_json', jsonStr);
+
+    // Trigger a widget update (use your exact provider/class name below)
+    await HomeWidget.updateWidget(
+      androidName: 'NewsWidgetProvider',
+      qualifiedAndroidName: 'com.yourcompany.yourapp.NewsWidgetProvider',
+    );
+  }
+
 
   @override
   void onClose() {
