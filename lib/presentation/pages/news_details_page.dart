@@ -15,16 +15,20 @@ class NewsDetailsPage extends GetView<NewsDetailsController> {
       appBar: AppBar(
         backgroundColor: Colors.red,
         title: Text(controller.article.url!, style: const TextStyle(color: Colors.white),),
-        bottom: controller.loadingProgress.value < 100
-            ? PreferredSize(
+        bottom: PreferredSize(
           preferredSize: const Size(double.infinity, 4.0),
-          child: Obx(()=> LinearProgressIndicator(
-            value: controller.loadingProgress.value / 100.0,  // Show progress as a fraction
-            backgroundColor: Colors.white,
-            valueColor: const AlwaysStoppedAnimation<Color>(Colors.redAccent),
-          )),
-        )
-            : null,
+          child: Obx(() {
+            if (controller.loadingProgress.value >= 100) {
+              return const SizedBox.shrink();
+            }
+
+            return LinearProgressIndicator(
+              value: controller.loadingProgress.value / 100.0,
+              backgroundColor: Colors.white,
+              valueColor: const AlwaysStoppedAnimation<Color>(Colors.redAccent),
+            );
+          }),
+        ),
         leading: IconButton(onPressed: () {
           Navigator.of(context).pop();
         }, icon: const Icon(Icons.arrow_back_ios, color: Colors.white,)),
